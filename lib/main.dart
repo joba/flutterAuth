@@ -19,7 +19,10 @@ class MyApp extends StatelessWidget {
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'Firebase Auth with Cubit',
-          theme: ThemeData(primarySwatch: Colors.blue, useMaterial3: true),
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange),
+            useMaterial3: true,
+          ),
           home: const AuthFlow(),
         ),
       ),
@@ -37,7 +40,7 @@ class AuthFlow extends StatelessWidget {
         if (state is AuthAuthenticated) {
           return const HomeScreen();
         }
-        if (state is AuthUnauthenticated) {
+        if (state is AuthUnauthenticated || state is AuthError) {
           return const LoginScreen();
         }
         return const SplashScreen();

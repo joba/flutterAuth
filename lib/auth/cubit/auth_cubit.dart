@@ -26,6 +26,15 @@ class AuthCubit extends Cubit<AuthState> {
     await _authRepository.signOut();
   }
 
+  Future<void> signUp(String email, String password) async {
+    try {
+      await _authRepository.signUp(email: email, password: password);
+    } catch (e) {
+      emit(AuthError(e.toString()));
+      emit(AuthUnauthenticated());
+    }
+  }
+
   @override
   Future<void> close() {
     _authStateSubscription.cancel();

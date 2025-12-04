@@ -3,10 +3,11 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 
 class AuthRepository {
   final FirebaseAuth _firebaseAuth;
-  FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+  final FirebaseAnalytics _analytics;
 
-  AuthRepository({FirebaseAuth? firebaseAuth})
-    : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance;
+  AuthRepository({FirebaseAuth? firebaseAuth, FirebaseAnalytics? analytics})
+    : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance,
+      _analytics = analytics ?? FirebaseAnalytics.instance;
 
   User? get currentUser => _firebaseAuth.currentUser;
 
@@ -18,7 +19,7 @@ class AuthRepository {
         email: email,
         password: password,
       );
-      await analytics.logEvent(name: 'login', parameters: {'method': 'email'});
+      await _analytics.logEvent(name: 'login', parameters: {'method': 'email'});
     } on FirebaseAuthException catch (e) {
       throw Exception(e.message);
     }
@@ -30,7 +31,7 @@ class AuthRepository {
         email: email,
         password: password,
       );
-      await analytics.logEvent(
+      await _analytics.logEvent(
         name: 'sign_up',
         parameters: {'method': 'email'},
       );
@@ -41,6 +42,6 @@ class AuthRepository {
 
   Future<void> signOut() async {
     await _firebaseAuth.signOut();
-    await analytics.logEvent(name: 'logout');
+    await _analytics.logEvent(name: 'logout');
   }
 }
