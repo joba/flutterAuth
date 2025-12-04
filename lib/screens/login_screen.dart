@@ -46,6 +46,15 @@ class _LoginScreenState extends State<LoginScreen> {
                 controller: _passwordController,
                 decoration: const InputDecoration(labelText: 'Password'),
                 obscureText: true,
+                textInputAction: TextInputAction.done,
+                onFieldSubmitted: (_) {
+                  if (_formKey.currentState!.validate()) {
+                    context.read<AuthCubit>().signIn(
+                      _emailController.text,
+                      _passwordController.text,
+                    );
+                  }
+                },
                 validator: (value) =>
                     value!.isEmpty ? 'Please enter a password' : null,
               ),
