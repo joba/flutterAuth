@@ -20,8 +20,9 @@ class AuthRepository {
         password: password,
       );
       await _analytics.logEvent(name: 'login', parameters: {'method': 'email'});
-    } on FirebaseAuthException catch (e) {
-      throw Exception(e.message);
+    } on FirebaseAuthException catch (_) {
+      // Re-throw the exception to be handled by the caller, so we get e.code and e.message
+      rethrow;
     }
   }
 
@@ -35,8 +36,8 @@ class AuthRepository {
         name: 'sign_up',
         parameters: {'method': 'email'},
       );
-    } on FirebaseAuthException catch (e) {
-      throw Exception(e.message);
+    } on FirebaseAuthException catch (_) {
+      rethrow;
     }
   }
 

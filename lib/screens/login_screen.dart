@@ -30,7 +30,7 @@ class _LoginScreenState extends State<LoginScreen> {
       listener: (context, state) {
         if (state is AuthError) {
           // Close dialog if open
-          if (Navigator.canPop(context)) {
+          if (Navigator.canPop(context) && state.type != 'weak-password') {
             Navigator.of(context).pop();
           }
           // Populate email field if we have a signup attempt email

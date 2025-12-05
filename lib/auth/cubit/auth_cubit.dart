@@ -19,7 +19,23 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<void> signIn(String email, String password) async {
-    await _authRepository.signIn(email: email, password: password);
+    try {
+      await _authRepository.signIn(email: email, password: password);
+    } catch (e) {
+      String errorMessage = 'An error occurred';
+      String errorCode = 'unknown';
+
+      if (e is FirebaseAuthException) {
+        errorMessage = e.message.toString();
+        errorCode = e.code.toString();
+      } else if (e is Map<String, dynamic>) {
+        errorMessage = e['message']?.toString() ?? 'An error occurred';
+        errorCode = e['code']?.toString() ?? 'unknown';
+      }
+
+      emit(AuthError(errorMessage, errorCode));
+      emit(AuthUnauthenticated());
+    }
   }
 
   Future<void> signOut() async {
@@ -30,7 +46,18 @@ class AuthCubit extends Cubit<AuthState> {
     try {
       await _authRepository.signUp(email: email, password: password);
     } catch (e) {
-      emit(AuthError(e.toString()));
+      String errorMessage = 'An error occurred';
+      String errorCode = 'unknown';
+
+      if (e is FirebaseAuthException) {
+        errorMessage = e.message.toString();
+        errorCode = e.code.toString();
+      } else if (e is Map<String, dynamic>) {
+        errorMessage = e['message']?.toString() ?? 'An error occurred';
+        errorCode = e['code']?.toString() ?? 'unknown';
+      }
+
+      emit(AuthError(errorMessage, errorCode));
       emit(AuthUnauthenticated());
     }
   }
