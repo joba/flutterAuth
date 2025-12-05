@@ -1,13 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
 
 class AuthRepository {
   final FirebaseAuth _firebaseAuth;
-  final FirebaseAnalytics _analytics;
 
-  AuthRepository({FirebaseAuth? firebaseAuth, FirebaseAnalytics? analytics})
-    : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance,
-      _analytics = analytics ?? FirebaseAnalytics.instance;
+  AuthRepository({FirebaseAuth? firebaseAuth})
+    : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance;
 
   User? get currentUser => _firebaseAuth.currentUser;
 
@@ -19,7 +16,6 @@ class AuthRepository {
         email: email,
         password: password,
       );
-      await _analytics.logEvent(name: 'login', parameters: {'method': 'email'});
     } on FirebaseAuthException catch (_) {
       // Re-throw the exception to be handled by the caller, so we get e.code and e.message
       rethrow;
@@ -32,10 +28,6 @@ class AuthRepository {
         email: email,
         password: password,
       );
-      await _analytics.logEvent(
-        name: 'sign_up',
-        parameters: {'method': 'email'},
-      );
     } on FirebaseAuthException catch (_) {
       rethrow;
     }
@@ -43,6 +35,5 @@ class AuthRepository {
 
   Future<void> signOut() async {
     await _firebaseAuth.signOut();
-    await _analytics.logEvent(name: 'logout');
   }
 }
